@@ -131,20 +131,20 @@ Here are the API test illustrations use Thunder Client of Visual Studio (similar
 5. **API Search specific race**
     ![image](https://github.com/tunth301201/RacingF1/assets/92015206/b9b31790-7c9b-4fe0-a632-bbd0461a9a7e)
 
-    _The return result contains all race results corresponding to the specified year (2023) and race name (bahrain). The data is sorted in descending order of points_
+    - _The return result contains all race results corresponding to the specified year (2023) and race name (bahrain). The data is sorted in descending order of points_
     
     ![image](https://github.com/tunth301201/RacingF1/assets/92015206/b7f3f0d2-52ee-4eb2-b61b-b8270ebe78ae)
 
 6. **API Search specific driver**
     ![image](https://github.com/tunth301201/RacingF1/assets/92015206/b988225e-7942-43e5-b1ae-35bc09f5241c)
 
-    - _The return result contains all race results corresponding to the specified year (2023) and driver name (Alexander Albon). The data is then sorted in ascending order of the race date.
+    - _The return result contains all race results corresponding to the specified year (2023) and driver name (Alexander Albon). The data is then sorted in ascending order of the race date._
     
     ![image](https://github.com/tunth301201/RacingF1/assets/92015206/9a8340da-af8b-40ae-b64a-dee51b1759db)
 
 7. **API Search specific team**
     ![image](https://github.com/tunth301201/RacingF1/assets/92015206/ee403782-38d0-4f4b-874e-c6cdc88605d7)
 
-    - _The return result contains all race results corresponding to the specified year (2023) and team name (Alfa Romeo Ferrari). The results are grouped by race name, and the total points of the team in each race are calculated.
+    - _The return result contains all race results corresponding to the specified year (2023) and team name (Alfa Romeo Ferrari). The results are grouped by race name, and the total points of the team in each race are calculated._
     
     ![image](https://github.com/tunth301201/RacingF1/assets/92015206/752bf541-7673-43b5-8807-3f5ecca035d1)
