@@ -192,7 +192,7 @@ app.get('/teams/:year', async (req: Request, res: Response) => {
 
 
 // Search specific race
-app.get('/race-results/:year/races/:raceName', async (req: Request, res: Response) => {
+app.get('/race-results/:year/:raceName', async (req: Request, res: Response) => {
     try {
       const year = parseInt(req.params.year);
       const raceName = req.params.raceName;
@@ -210,6 +210,37 @@ app.get('/race-results/:year/races/:raceName', async (req: Request, res: Respons
       res.status(500).json({ error: 'Internal server error' });
     }
   });
+
+  
+// Search specific driver
+app.get('/driver-results/:year/:driverName', async (req: Request, res: Response) => {
+    try {
+      const year = parseInt(req.params.year);
+      const driverName = req.params.driverName;
+  
+      // Get the Mongoose model for RaceResult
+      const RaceResult = RaceResultSchema.getModel();
+  
+      // Find all race results matching the given year and driver name
+      const driverResults = await RaceResult.find({ year, driver: driverName });
+  
+      // Extract the required data (raceName, team, pos, point) from the driver results
+      const extractedData = driverResults.map((result) => ({
+        grandPrix: result.raceName,
+        date: result.year,
+        car: result.team,
+        pos: result.pos,
+        point: result.point,
+      }));
+  
+      // Return the extracted data as JSON
+      res.json(extractedData);
+    } catch (error) {
+      console.error('Error:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+  
   
   
   
