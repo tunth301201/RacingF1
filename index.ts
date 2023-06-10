@@ -84,6 +84,39 @@ app.get('/race-results', async (req: Request, res: Response) => {
   
 
 
+app.get('/races/:year', async (req: Request, res: Response) => {
+try {
+    const year = parseInt(req.params.year);
+
+    // Get the Mongoose model for RaceResult
+    const RaceResult = RaceResultSchema.getModel();
+
+    // Search for races by year and position 1
+    const races = await RaceResult.find({ year, pos: 1 });
+
+    // Extract the required information for each race
+    const raceData = races.map((race) => ({
+    raceName: race.raceName,
+    year: race.year,
+    winner: race.driver,
+    car: race.team,
+    laps: race.laps,
+    time: race.time,
+    }));
+
+    // Return the race data
+    res.json(raceData);
+} catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+}
+});
+  
+  
+  
+  
+
+
 
 
 // Connect db and start server
