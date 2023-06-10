@@ -155,6 +155,7 @@ app.get('/drivers/:year', async (req: Request, res: Response) => {
     }
   });
 
+
 // Search teams by passed year
 app.get('/teams/:year', async (req: Request, res: Response) => {
     try {
@@ -188,6 +189,28 @@ app.get('/teams/:year', async (req: Request, res: Response) => {
       res.status(500).json({ error: 'Internal server error' });
     }
   });
+
+
+// Search specific race
+app.get('/race-results/:year/races/:raceName', async (req: Request, res: Response) => {
+    try {
+      const year = parseInt(req.params.year);
+      const raceName = req.params.raceName;
+  
+      // Get the Mongoose model for RaceResult
+      const RaceResult = RaceResultSchema.getModel();
+  
+      // Find all race results matching the given year and race name
+      const raceResults = await RaceResult.find({ year, raceName });
+  
+      // Return the race results as JSON
+      res.json(raceResults);
+    } catch (error) {
+      console.error('Error:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+  
   
   
   
