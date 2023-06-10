@@ -208,13 +208,13 @@ app.get('/teams/:year', async (req: Request, res: Response) => {
 app.get('/race-results/:year/:raceName', async (req: Request, res: Response) => {
     try {
       const year = parseInt(req.params.year);
-      const raceName = req.params.raceName;
+      const raceName = req.params.raceName.replace(/_/g, ' ').toLowerCase();
   
       // Get the Mongoose model for RaceResult
       const RaceResult = RaceResultSchema.getModel();
   
       // Find all race results matching the given year and race name
-      const raceResults = await RaceResult.find({ year, raceName });
+      const raceResults = await RaceResult.find({ year, raceName: { $regex: new RegExp(`^${raceName}$`, 'i') }, });
 
       // Sort the race data by points in descending order
       raceResults.sort((a, b) => b.point - a.point);
@@ -232,13 +232,13 @@ app.get('/race-results/:year/:raceName', async (req: Request, res: Response) => 
 app.get('/driver-results/:year/:driverName', async (req: Request, res: Response) => {
     try {
       const year = parseInt(req.params.year);
-      const driverName = req.params.driverName;
+      const driverName = req.params.driverName.replace(/_/g, ' ').toLowerCase();
   
       // Get the Mongoose model for RaceResult
       const RaceResult = RaceResultSchema.getModel();
   
       // Find all race results matching the given year and driver name
-      const driverResults = await RaceResult.find({ year, driver: driverName });
+      const driverResults = await RaceResult.find({ year, driver: { $regex: new RegExp(`^${driverName}$`, 'i') } });
   
       // Extract the required data (raceName, team, pos, point) from the driver results
       const extractedData = driverResults.map((result) => ({
@@ -269,13 +269,13 @@ app.get('/driver-results/:year/:driverName', async (req: Request, res: Response)
 app.get('/team-results/:year/:teamName', async (req: Request, res: Response) => {
     try {
       const year = parseInt(req.params.year);
-      const teamName = req.params.teamName;
+      const teamName = req.params.teamName.replace(/_/g, ' ').toLowerCase();
   
       // Get the Mongoose model for RaceResult
       const RaceResult = RaceResultSchema.getModel();
   
       // Find all race results matching the given year and team name
-      const teamResults = await RaceResult.find({ year, team: teamName });
+      const teamResults = await RaceResult.find({ year, team: { $regex: new RegExp(`^${teamName}$`, 'i') } });
   
       // Group the team results by race name and calculate the total points for each race
       const raceResults: { grandPrix: string; date: string; pts: number }[] = [];
