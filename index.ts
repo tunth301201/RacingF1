@@ -211,7 +211,7 @@ app.get('/race-results/:year/:raceName', async (req: Request, res: Response) => 
     }
   });
 
-  
+
 // Search specific driver
 app.get('/driver-results/:year/:driverName', async (req: Request, res: Response) => {
     try {
@@ -240,6 +240,45 @@ app.get('/driver-results/:year/:driverName', async (req: Request, res: Response)
       res.status(500).json({ error: 'Internal server error' });
     }
   });
+
+
+// Search specific team
+app.get('/team-results/:year/:teamName', async (req: Request, res: Response) => {
+    try {
+      const year = parseInt(req.params.year);
+      const teamName = req.params.teamName;
+  
+      // Get the Mongoose model for RaceResult
+      const RaceResult = RaceResultSchema.getModel();
+  
+      // Find all race results matching the given year and team name
+      const teamResults = await RaceResult.find({ year, team: teamName });
+  
+      // Group the team results by race name and calculate the total points for each race
+      const raceResults: { grandPrix: string; date: number; point: number }[] = [];
+
+      teamResults.forEach((result) => {
+        const existingRaceResult = raceResults.find((r) => r.grandPrix === result.raceName);
+        if (existingRaceResult) {
+          existingRaceResult.point += result.point;
+        } else {
+          raceResults.push(
+            { 
+                grandPrix: result.raceName, 
+                date: result.year, 
+                point: result.point 
+            });
+        }
+      });
+  
+      // Return the race results for the team as JSON
+      res.json(raceResults);
+    } catch (error) {
+      console.error('Error:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+  
   
   
   
