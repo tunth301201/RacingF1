@@ -254,7 +254,7 @@ app.get('/driver-results/:year/:driverName', async (req: Request, res: Response)
         const dateA = new Date(a.date);
         const dateB = new Date(b.date);
         return dateA.getTime() - dateB.getTime();
-    });
+        });
   
       // Return the extracted data as JSON
       res.json(extractedData);
@@ -278,21 +278,28 @@ app.get('/team-results/:year/:teamName', async (req: Request, res: Response) => 
       const teamResults = await RaceResult.find({ year, team: teamName });
   
       // Group the team results by race name and calculate the total points for each race
-      const raceResults: { grandPrix: string; date: number; point: number }[] = [];
+      const raceResults: { grandPrix: string; date: string; pts: number }[] = [];
 
       teamResults.forEach((result) => {
         const existingRaceResult = raceResults.find((r) => r.grandPrix === result.raceName);
         if (existingRaceResult) {
-          existingRaceResult.point += result.point;
+          existingRaceResult.pts += result.point;
         } else {
           raceResults.push(
             { 
                 grandPrix: result.raceName, 
-                date: result.year, 
-                point: result.point 
+                date: result.date, 
+                pts: result.point 
             });
         }
       });
+
+      // Sort the races by date in ascending order
+      raceResults.sort((a, b) => {
+        const dateA = new Date(a.date);
+        const dateB = new Date(b.date);
+        return dateA.getTime() - dateB.getTime();
+        });
   
       // Return the race results for the team as JSON
       res.json(raceResults);
