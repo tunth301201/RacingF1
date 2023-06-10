@@ -83,34 +83,78 @@ app.get('/race-results', async (req: Request, res: Response) => {
   });
   
 
-
+// Search races by passed year
 app.get('/races/:year', async (req: Request, res: Response) => {
-try {
-    const year = parseInt(req.params.year);
+    try {
+        const year = parseInt(req.params.year);
 
-    // Get the Mongoose model for RaceResult
-    const RaceResult = RaceResultSchema.getModel();
+        // Get the Mongoose model for RaceResult
+        const RaceResult = RaceResultSchema.getModel();
 
-    // Search for races by year and position 1
-    const races = await RaceResult.find({ year, pos: 1 });
+        // Search for races by year and position 1
+        const races = await RaceResult.find({ year, pos: 1 });
 
-    // Extract the required information for each race
-    const raceData = races.map((race) => ({
-    raceName: race.raceName,
-    year: race.year,
-    winner: race.driver,
-    car: race.team,
-    laps: race.laps,
-    time: race.time,
-    }));
+        // Extract the required information for each race
+        const raceData = races.map((race) => ({
+            raceName: race.raceName,
+            year: race.year,
+            winner: race.driver,
+            car: race.team,
+            laps: race.laps,
+            time: race.time,
+        }));
 
-    // Return the race data
-    res.json(raceData);
-} catch (error) {
-    console.error('Error:', error);
-    res.status(500).json({ error: 'Internal server error' });
-}
+        // Return the race data
+        res.json(raceData);
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 });
+
+
+// Search drivers by passed year
+app.get('/drivers/:year', async (req: Request, res: Response) => {
+    try {
+      const year = parseInt(req.params.year);
+  
+      // Get the Mongoose model for RaceResult
+      const RaceResult = RaceResultSchema.getModel();
+  
+      // Search for races by year
+      const races = await RaceResult.find({ year });
+  
+      // Create a map to store driver information
+      const driverMap: { [driver: string]: { team: string; points: number } } = {};
+  
+      // Calculate the total points for each driver
+      races.forEach((race) => {
+        const driver = race.driver;
+        const team = race.team;
+        const points = race.point;
+  
+        if (!driverMap[driver]) {
+          driverMap[driver] = { team, points };
+        } else {
+          driverMap[driver].points += points;
+        }
+      });
+  
+      // Extract the driver data
+      const driverData = Object.entries(driverMap).map(([driver, data]) => ({
+        driver,
+        team: data.team,
+        points: data.points,
+      }));
+  
+      // Return the driver data
+      res.json(driverData);
+    } catch (error) {
+      console.error('Error:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+  
   
   
   
