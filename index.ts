@@ -243,11 +243,18 @@ app.get('/driver-results/:year/:driverName', async (req: Request, res: Response)
       // Extract the required data (raceName, team, pos, point) from the driver results
       const extractedData = driverResults.map((result) => ({
         grandPrix: result.raceName,
-        date: result.year,
+        date: result.date,
         car: result.team,
         pos: result.pos,
         point: result.point,
       }));
+
+      // Sort the races by date in ascending order
+      extractedData.sort((a, b) => {
+        const dateA = new Date(a.date);
+        const dateB = new Date(b.date);
+        return dateA.getTime() - dateB.getTime();
+    });
   
       // Return the extracted data as JSON
       res.json(extractedData);
