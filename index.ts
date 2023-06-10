@@ -184,14 +184,16 @@ app.get('/teams/:year', async (req: Request, res: Response) => {
             points: { $sum: '$point' },
           },
         },
-        { $match: { points: { $gt: 0 } } },
       ]);
   
       // Extract the required information for each team
       const teamData = teams.map((team) => ({
-        teamName: team._id,
-        points: team.points,
+        team: team._id,
+        pts: team.points,
       }));
+
+      // Sort the team data by points in descending order
+      teamData.sort((a, b) => b.pts - a.pts);
   
       // Return the team data
       res.json(teamData);
