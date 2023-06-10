@@ -124,42 +124,45 @@ app.get('/races/:year', async (req: Request, res: Response) => {
 // Search drivers by passed year
 app.get('/drivers/:year', async (req: Request, res: Response) => {
     try {
-      const year = parseInt(req.params.year);
-  
-      // Get the Mongoose model for RaceResult
-      const RaceResult = RaceResultSchema.getModel();
-  
-      // Search for races by year
-      const races = await RaceResult.find({ year });
-  
-      // Create a map to store driver information
-      const driverMap: { [driver: string]: { team: string; points: number } } = {};
-  
-      // Calculate the total points for each driver
-      races.forEach((race) => {
-        const driver = race.driver;
-        const team = race.team;
-        const points = race.point;
-  
-        if (!driverMap[driver]) {
-          driverMap[driver] = { team, points };
-        } else {
-          driverMap[driver].points += points;
-        }
-      });
-  
-      // Extract the driver data
-      const driverData = Object.entries(driverMap).map(([driver, data]) => ({
-        driver,
-        team: data.team,
-        points: data.points,
-      }));
-  
-      // Return the driver data
-      res.json(driverData);
+        const year = parseInt(req.params.year);
+    
+        // Get the Mongoose model for RaceResult
+        const RaceResult = RaceResultSchema.getModel();
+    
+        // Search for races by year
+        const races = await RaceResult.find({ year });
+    
+        // Create a map to store driver information
+        const driverMap: { [driver: string]: { team: string; points: number } } = {};
+    
+        // Calculate the total points for each driver
+        races.forEach((race) => {
+            const driver = race.driver;
+            const team = race.team;
+            const points = race.point;
+    
+            if (!driverMap[driver]) {
+            driverMap[driver] = { team, points };
+            } else {
+            driverMap[driver].points += points;
+            }
+        });
+    
+        // Extract the driver data
+        const driverData = Object.entries(driverMap).map(([driver, data]) => ({
+            driver,
+            car: data.team,
+            pts: data.points,
+        }));
+
+        // Sort the driver data by points in descending order
+        driverData.sort((a, b) => b.pts - a.pts);
+    
+        // Return the driver data
+        res.json(driverData);
     } catch (error) {
-      console.error('Error:', error);
-      res.status(500).json({ error: 'Internal server error' });
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal server error' });
     }
   });
 
