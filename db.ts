@@ -1,6 +1,6 @@
 import mongoose, { ConnectOptions } from "mongoose";
 
-mongoose.connect('', {
+mongoose.connect('', {            // Replace with your MongoDB Atlas URL
   useNewUrlParser: true,
   useUnifiedTopology: true
 } as ConnectOptions);
