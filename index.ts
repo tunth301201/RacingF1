@@ -154,6 +154,42 @@ app.get('/drivers/:year', async (req: Request, res: Response) => {
       res.status(500).json({ error: 'Internal server error' });
     }
   });
+
+// Search teams by passed year
+app.get('/teams/:year', async (req: Request, res: Response) => {
+    try {
+      const year = parseInt(req.params.year);
+  
+      // Get the Mongoose model for RaceResult
+      const RaceResult = RaceResultSchema.getModel();
+  
+      // Search for teams by year and calculate total points
+      const teams = await RaceResult.aggregate([
+        { $match: { year } },
+        {
+          $group: {
+            _id: '$team',
+            points: { $sum: '$point' },
+          },
+        },
+        { $match: { points: { $gt: 0 } } },
+      ]);
+  
+      // Extract the required information for each team
+      const teamData = teams.map((team) => ({
+        teamName: team._id,
+        points: team.points,
+      }));
+  
+      // Return the team data
+      res.json(teamData);
+    } catch (error) {
+      console.error('Error:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+  
+  
   
   
   
