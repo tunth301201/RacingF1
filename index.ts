@@ -215,6 +215,9 @@ app.get('/race-results/:year/:raceName', async (req: Request, res: Response) => 
   
       // Find all race results matching the given year and race name
       const raceResults = await RaceResult.find({ year, raceName });
+
+      // Sort the race data by points in descending order
+      raceResults.sort((a, b) => b.point - a.point);
   
       // Return the race results as JSON
       res.json(raceResults);
