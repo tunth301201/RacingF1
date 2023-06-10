@@ -3,6 +3,7 @@ import { Document, Schema, model, Model } from 'mongoose';
 interface IRaceResult extends Document {
   raceName: string;
   year: number;
+  date: string;
   driver: string;
   team: string;
   laps: number;
@@ -16,6 +17,7 @@ class RaceResultSchema {
   private static schema: Schema = new Schema<IRaceResult>({
     raceName: String,
     year: Number,
+    date: String,
     driver: String,
     team: String,
     laps: Number,

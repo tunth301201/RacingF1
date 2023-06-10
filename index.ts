@@ -14,7 +14,7 @@ app.get('/race-results', async (req: Request, res: Response) => {
     try {
         const startYear = 1950;
         const endYear = 2023;
-        const resultsData: { raceName: string; year: number; driver: string; team: string; laps: number; time: string; point: number, pos: number; no: number }[] = [];
+        const resultsData: { raceName: string; year: number; date: string; driver: string; team: string; laps: number; time: string; point: number, pos: number; no: number }[] = [];
     
         // Create an array to hold all the promises
         const racePromises: Promise<void>[] = [];
@@ -30,6 +30,7 @@ app.get('/race-results', async (req: Request, res: Response) => {
                     const element = raceResults[i];
                     const raceName = $(element).find('td:nth-child(2) a').text().trim();
                     const href = $(element).find('td:nth-child(2) a').attr('href');
+                    const date = $(element).find('td:nth-child(3)').text().trim();
         
                     // Send GET request to the race result page for the specific race
                     const raceResponse = await axios.get(`https://www.formula1.com${href}`);
@@ -52,7 +53,7 @@ app.get('/race-results', async (req: Request, res: Response) => {
 
                         const no = parseInt(race$(raceElement).find('td:nth-child(3)').text().trim());
         
-                        const raceResult = { raceName, year, driver, team, laps, time, point, pos, no };
+                        const raceResult = { raceName, year, date, driver, team, laps, time, point, pos, no };
                         resultsData.push(raceResult);
                     });
                 };
@@ -94,10 +95,17 @@ app.get('/races/:year', async (req: Request, res: Response) => {
         // Search for races by year and position 1
         const races = await RaceResult.find({ year, pos: 1 });
 
+        // Sort the races by date in ascending order
+        races.sort((a, b) => {
+            const dateA = new Date(a.date);
+            const dateB = new Date(b.date);
+            return dateA.getTime() - dateB.getTime();
+        });
+
         // Extract the required information for each race
         const raceData = races.map((race) => ({
-            raceName: race.raceName,
-            year: race.year,
+            grandPrix: race.raceName,
+            date: race.date,
             winner: race.driver,
             car: race.team,
             laps: race.laps,
@@ -279,17 +287,6 @@ app.get('/team-results/:year/:teamName', async (req: Request, res: Response) => 
     }
   });
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-
-
 
 
 // Connect db and start server
